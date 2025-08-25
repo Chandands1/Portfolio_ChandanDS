@@ -1,34 +1,28 @@
-// src/App.jsx
 import React, { Suspense, lazy, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ErrorBoundary from './components/ErrorBoundary';
-import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
+import Navbar from './components/Navbar';
+import Hero from './components/Hero';
 import LoadingSpinner from './components/LoadingSpinner';
 import BackToTop from './components/BackToTop';
 import ScrollProgress from './components/ScrollProgress';
 
 // Lazy load components for better performance
-const About = lazy(() => import("./components/About"));
-const Skills = lazy(() => import("./components/Skills"));
-const Experience = lazy(() => import("./components/Experience"));
-const Education = lazy(() => import("./components/Education"));
-const Footer = lazy(() => import("./components/Footer"));
+const About = lazy(() => import('./components/About'));
+const Skills = lazy(() => import('./components/Skills'));
+const Experience = lazy(() => import('./components/Experience'));
+const Education = lazy(() => import('./components/Education'));
+const Footer = lazy(() => import('./components/Footer'));
 
 export default function App() {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    const savedTheme = localStorage.getItem('theme');
+    return savedTheme ? savedTheme === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for saved theme preference or default to light mode
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      setDarkMode(savedTheme === 'dark');
-    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      setDarkMode(true);
-    }
-
-    // Simulate loading time
+    // Simulate loading time for initial render
     const timer = setTimeout(() => setIsLoading(false), 1000);
     return () => clearTimeout(timer);
   }, []);
@@ -39,18 +33,51 @@ export default function App() {
     document.documentElement.classList.toggle('dark', darkMode);
   }, [darkMode]);
 
+  // Listen for system theme changes
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (e) => {
+      if (!localStorage.getItem('theme')) {
+        setDarkMode(e.matches);
+      }
+    };
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
   if (isLoading) {
-    return <LoadingSpinner />;
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <LoadingSpinner />
+      </motion.div>
+    );
   }
 
   return (
     <ErrorBoundary>
-      <div className={`bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300 overflow-x-hidden ${darkMode ? 'dark' : ''}`}>
+      <motion.div
+        className={`min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300 overflow-x-hidden ${darkMode ? 'dark' : ''}`}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         <ScrollProgress />
         <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
         <Hero />
         
-        <Suspense fallback={<LoadingSpinner />}>
+        <Suspense fallback={
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            <LoadingSpinner />
+          </motion.div>
+        }>
           <About />
           <Skills />
           <Experience />
@@ -59,7 +86,7 @@ export default function App() {
         </Suspense>
         
         <BackToTop />
-      </div>
+      </motion.div>
     </ErrorBoundary>
   );
 }
