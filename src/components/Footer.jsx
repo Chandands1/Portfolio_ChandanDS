@@ -1,11 +1,10 @@
-// src/components/Footer.jsx
 import { motion } from 'framer-motion';
 
 export default function Footer() {
   const socialLinks = [
-    { name: "Email", href: "mailto:chandandhanush001@gmail.com", icon: "📧" },
-    { name: "LinkedIn", href: "https://linkedin.com/in/chandan-d-s-8a1173320", icon: "💼" },
-    { name: "GitHub", href: "https://github.com/", icon: "🔗" }
+    { name: "Email", href: "mailto:chandands.in@gmail.com", icon: "📧" },
+    { name: "LinkedIn", href: "https://linkedin.com/in/chandan-d-s-281a89320", icon: "💼" },
+    { name: "Mobile", href: "tel:9113831475", icon: "📱" }
   ];
 
   return (
@@ -31,7 +30,7 @@ export default function Footer() {
               <motion.a
                 key={link.name}
                 href={link.href}
-                target={link.name !== "Email" ? "_blank" : undefined}
+                target={link.name !== "Email" && link.name !== "Mobile" ? "_blank" : undefined}
                 className="group relative p-4 bg-white/10 backdrop-blur-sm rounded-2xl hover:bg-white/20 transition-all duration-300"
                 whileHover={{ y: -5, scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

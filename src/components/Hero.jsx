@@ -1,4 +1,3 @@
-// src/components/Hero.jsx
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -87,14 +86,14 @@ export default function Hero() {
           transition={{ delay: 0.8 }}
         >
           {[
-            { text: "Email", href: "mailto:chandandhanush001@gmail.com", color: "from-indigo-500 to-blue-600" },
-            { text: "LinkedIn", href: "https://linkedin.com/in/chandan-d-s-8a1173320", color: "from-purple-500 to-indigo-600" },
-            { text: "GitHub", href: "https://github.com/", color: "from-pink-500 to-purple-600" }
+            { text: "Email", href: "mailto:chandands.in@gmail.com", color: "from-indigo-500 to-blue-600" },
+            { text: "LinkedIn", href: "https://linkedin.com/in/chandan-d-s-281a89320", color: "from-purple-500 to-indigo-600" },
+            { text: "Mobile", href: "tel:9113831475", color: "from-pink-500 to-purple-600" }
           ].map((link, index) => (
             <motion.a
               key={link.text}
               href={link.href}
-              target={link.text !== "Email" ? "_blank" : undefined}
+              target={link.text !== "Email" && link.text !== "Mobile" ? "_blank" : undefined}
               className={`px-8 py-3 rounded-full bg-gradient-to-r ${link.color} hover:shadow-xl transform transition-all duration-300 font-semibold`}
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
